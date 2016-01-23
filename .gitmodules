@@ -1,0 +1,6 @@
+[submodule "dependencies/hlsdk"]
+	path = dependencies/hlsdk
+	url = git@github.com:ValveSoftware/halflife.git
+[submodule "dependencies/metamod_p"]
+	path = dependencies/metamod_p
+	url = git@github.com:jkivilin/metamod-p.git

@@ -1,0 +1,11 @@
+# Compiled files
+*.o
+*.so
+*.dll
+
+# Executables
+*.exe
+
+/build/*
+!/build/.keep
+/rust/target/
