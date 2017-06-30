@@ -1,5 +1,5 @@
 [package]
-name = "simple_meta"
+name = "metarust"
 version = "0.1.0"
 authors = ["Fedcomp"]
 publish = false

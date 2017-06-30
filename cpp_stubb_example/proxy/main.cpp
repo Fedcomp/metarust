@@ -7,15 +7,15 @@ globalvars_t	 *gpGlobals;
 enginefuncs_t   g_engfuncs;
 
 plugin_info_t info = {
-	META_INTERFACE_VERSION,						// ifvers
-	"MetaRust",								// name
-	"0.1",										// version
-	"24.01.2016",							// date
-	"Fedcomp",								// author
-	"http://igromaster.net",	// url
-	"METARUST",								// logtag, all caps please
-	PT_CHANGELEVEL,												// (when) loadable
-	PT_CHANGELEVEL													// (when) unloadable
+	META_INTERFACE_VERSION,	        // ifvers
+	(char *) "CPPMetaStub",					// name
+	(char *) "0.1",									// version
+	(char *) "30.06.2017",				  // date
+	(char *) "Fedcomp",							// author
+	(char *) "http://amx-x.ru",	    // url
+	(char *) "CPPMETA",							// logtag, all caps please
+	PT_CHANGELEVEL,					// (when) loadable
+	PT_CHANGELEVEL					// (when) unloadable
 };
 
 static META_FUNCTIONS gMetaFunctionTable =

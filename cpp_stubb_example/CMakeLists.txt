@@ -8,7 +8,7 @@ include_directories (
 	dependencies/metamod_p/metamod
 )
 
-set (LIBNAME metarust)
+set (LIBNAME cppmetastub)
 set (CMAKE_BUILD_TYPE Debug)
 set (FILES proxy/main.cpp)
 
