@@ -1,11 +1,11 @@
-# MetaRust
+# Metamod CPP stub plugin
 At this moment simple C stub plugin for metamod.
-Loading tested only under linux.
+Only tested on linux.
 
 # Installation & Compilation
 ```
 git clone git@github.com:Fedcomp/metarust.git
-cd metarust
+cd metarust/cpp_stub_example
 ./build.sh
 ```
-You will need libraries depending on your distribution.
+Requires cmake and some other libraries depending on your distribution.
