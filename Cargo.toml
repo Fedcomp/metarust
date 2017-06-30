@@ -1,0 +1,11 @@
+[package]
+name = "simple_meta"
+version = "0.1.0"
+authors = ["Fedcomp"]
+publish = false
+
+[lib]
+crate-type = ["dylib"]
+
+[dependencies]
+lazy_static = "0.2"
