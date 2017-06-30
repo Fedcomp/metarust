@@ -1,12 +1,9 @@
-#[macro_use]
-extern crate lazy_static;
-
 use std::os::raw::*;
-use std::ffi::{CStr, CString};
-use std::fmt::Debug;
+use std::ffi::{CStr};
 
 #[allow(non_camel_case_types)]
 #[derive(Debug)]
+#[allow(dead_code)]
 enum PLUG_LOADTIME {
     PT_NEVER,
 	PT_STARTUP,		// should only be loaded/unloaded at initial hlds execution
@@ -25,28 +22,29 @@ pub struct plugin_info_t {
     author:  *const c_char,
     url:     *const c_char,
     logtag:  *const c_char,
-    loadable: i8,
-    unloadable: i8
+    loadable: i32,
+    unloadable: i32
 }
 
-unsafe impl Sync for plugin_info_t {}
-
-// pub const META_INTERFACE_VERSION: *const str = "5:13\0";
-lazy_static! {
-    static ref PLUGIN_INFO: plugin_info_t = {
-        plugin_info_t {
-            ifvers:  CString::new("5:13").unwrap().as_ptr(),
-            name:    CString::new("SimpleMeta").unwrap().as_ptr(),
-            version: CString::new("0.0.1").unwrap().as_ptr(),
-            date:    CString::new("29.06.2017").unwrap().as_ptr(),
-            author:  CString::new("Fedcomp").unwrap().as_ptr(),
-            url:     CString::new("http://amx-x/ru").unwrap().as_ptr(),
-            logtag:  CString::new("SIMETA").unwrap().as_ptr(),
-            loadable: 2,
-            unloadable: 2
-        }
-    };
+macro_rules! cstr {
+  ($s:expr) => (
+    concat!($s, "\0") as *const str as *const [c_char] as *const c_char
+  );
 }
+
+const META_INTERFACE_VERSION: *const c_char = cstr!("5:13");
+
+const PLUGIN_INFO: plugin_info_t = plugin_info_t {
+    ifvers:  META_INTERFACE_VERSION,
+    name:    cstr!("MetaRust"),
+    version: cstr!("0.0.1"),
+    date:    cstr!("30.06.2017"),
+    author:  cstr!("Fedcomp"),
+    url:     cstr!("http://amx-x/ru"),
+    logtag:  cstr!("METARUST"),
+    loadable: PLUG_LOADTIME::PT_CHANGELEVEL as i32,
+    unloadable: PLUG_LOADTIME::PT_CHANGELEVEL as i32
+};
 
 #[allow(non_snake_case)]
 #[no_mangle]
@@ -64,14 +62,7 @@ pub extern "C" fn Meta_Dettach() -> c_int {
 #[no_mangle]
 pub unsafe extern "C" fn Meta_Query(raw_interface_version: *const c_char, pinfo: *mut *const plugin_info_t, _mutil_funcs: c_char) -> c_int {
     let _interface_version = CStr::from_ptr(raw_interface_version);
-
-    println!("===LOOK AT ME===");
-    let vers = CStr::from_ptr((*PLUGIN_INFO).ifvers);
-    println!("{:?}", vers);
-    *pinfo = &*PLUGIN_INFO;
-
-    // println!("{:?}", *PLUGIN_INFO);
-    // *pinfo = PLUGIN_INFO;
+    *pinfo = &PLUGIN_INFO;
     1
 }
 
