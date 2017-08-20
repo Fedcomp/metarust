@@ -1,3 +1,2 @@
 [build]
-target-dir = "server/bin/cstrike/addons/metarust"
 target = "i686-unknown-linux-gnu"
