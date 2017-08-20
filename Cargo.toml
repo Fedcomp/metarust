@@ -8,3 +8,4 @@ publish = false
 crate-type = ["dylib"]
 
 [dependencies]
+cstr-macro = "0.1.0"

@@ -1,4 +1,6 @@
-#[macro_use]
+#[macro_use(cstr)]
+extern crate cstr_macro;
+
 pub mod metamod;
 
 use std::os::raw::{c_char, c_int};

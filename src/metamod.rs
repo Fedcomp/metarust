@@ -1,11 +1,5 @@
 use std::os::raw::c_char;
 
-macro_rules! cstr {
-  ($s:expr) => (
-    concat!($s, "\0") as *const str as *const [c_char] as *const c_char
-  );
-}
-
 #[allow(non_camel_case_types)]
 pub enum PLUG_LOADTIME {
     PT_NEVER,
