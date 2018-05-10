@@ -1,6 +1,6 @@
 [submodule "cpp_stubb_example/dependencies/hlsdk"]
-	path = cpp_stubb_example/dependencies/hlsdk
+	path = metamod_bindgen/cpp_stubb_example/dependencies/hlsdk
 	url = git@github.com:ValveSoftware/halflife.git
 [submodule "cpp_stubb_example/dependencies/metamod_p"]
-	path = cpp_stubb_example/dependencies/metamod_p
+	path = metamod_bindgen/cpp_stubb_example/dependencies/metamod_p
 	url = git@github.com:jkivilin/metamod-p.git

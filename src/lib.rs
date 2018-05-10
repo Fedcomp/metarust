@@ -1,3 +1,5 @@
+#![cfg_attr(feature = "strict", deny(warnings))]
+
 #[macro_use(cstr)]
 extern crate cstr_macro;
 

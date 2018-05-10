@@ -7,5 +7,10 @@ publish = false
 [lib]
 crate-type = ["dylib"]
 
+[features]
+# Treat warnings as a build error.
+strict = []
+
 [dependencies]
 cstr-macro = "0.1.0"
+metamod-bindgen = { path = "metamod_bindgen" }
