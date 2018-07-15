@@ -8,8 +8,7 @@ publish = false
 crate-type = ["dylib"]
 
 [features]
-# Treat warnings as a build error.
-strict = []
+strict = [] # Treat warnings as a build error
 
 [dependencies]
 cstr-macro = "0.1.0"

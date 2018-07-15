@@ -3,9 +3,5 @@ name = "metamod-bindgen"
 version = "0.0.1"
 authors = ["Fedcomp"]
 
-[features]
-# Treat warnings as a build error.
-strict = []
-
 [build-dependencies]
 bindgen = "0.26.3"
