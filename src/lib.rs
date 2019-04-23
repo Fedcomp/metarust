@@ -5,10 +5,11 @@ use std::ffi::CStr;
 use std::os::raw::{c_char, c_int};
 
 use cstr_macro::cstr;
-use metamod_bindgen::{enginefuncs_t, gamedll_funcs_t, globalvars_t, meta_globals_t};
+use metamod_bindgen::{enginefuncs_t, gamedll_funcs_t, globalvars_t};
 use metamod_sys::{
-    plugin_info_t, DLL_FUNCTIONS, GETENTITYAPI_FN_INTERFACE_VERSION, META_FUNCTIONS,
-    META_INTERFACE_VERSION,
+    meta_globals_t, plugin_info_t, DLL_FUNCTIONS, GETENTITYAPI_FN_INTERFACE_VERSION,
+    META_FUNCTIONS, META_INTERFACE_VERSION,
+    META_RES::*,
     PLUG_LOADTIME::{self, PT_CHANGELEVEL},
 };
 
@@ -89,6 +90,7 @@ const DLL_FUNCTIONS_TABLE: DLL_FUNCTIONS = DLL_FUNCTIONS {
 };
 
 static mut gpGlobals: Option<*const globalvars_t> = None;
+static mut gpMetaGlobals: Option<&mut meta_globals_t> = None;
 
 pub unsafe extern "C" fn get_entity_api(
     pFunctionTable: *mut DLL_FUNCTIONS,
@@ -111,10 +113,11 @@ pub unsafe extern "C" fn get_entity_api(
 pub unsafe extern "C" fn Meta_Attach(
     _plug_loadtime: PLUG_LOADTIME,
     pFunctionTable: *mut META_FUNCTIONS,
-    _pMGlobals: *const meta_globals_t,
+    pMGlobals: *mut meta_globals_t,
     _pGamedllFuncs: *const gamedll_funcs_t,
 ) -> c_int {
     *pFunctionTable = META_FUNCTIONS_TABLE;
+    gpMetaGlobals = Some(&mut *pMGlobals);
     1
 }
 
@@ -145,4 +148,10 @@ pub unsafe extern "C" fn GiveFnptrsToDll(
     gpGlobals = Some(pGlobals);
 }
 
-pub extern "C" fn start_frame() {}
+pub unsafe extern "C" fn start_frame() {
+    let meta_globals = gpMetaGlobals
+        .as_mut()
+        .expect("Meta globals should be already initialized to this moment");
+
+    meta_globals.mres = MRES_IGNORED;
+}

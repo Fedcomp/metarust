@@ -2,7 +2,7 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 
-use std::os::raw::{c_char, c_int};
+use std::os::raw::{c_char, c_int, c_void};
 
 use cstr_macro::cstr;
 
@@ -54,6 +54,29 @@ pub struct plugin_info_t {
     /// when plugin is unloadable
     pub unloadable: PLUG_LOADTIME,
 }
+
+#[repr(u32)]
+#[derive(Debug)]
+pub enum META_RES {
+    MRES_UNSET = 0,
+    MRES_IGNORED = 1,
+    MRES_HANDLED = 2,
+    MRES_OVERRIDE = 3,
+    MRES_SUPERCEDE = 4,
+}
+
+#[repr(C)]
+#[derive(Debug)]
+pub struct meta_globals_s {
+    pub mres: META_RES,
+    pub prev_mres: META_RES,
+    pub status: META_RES,
+    // TODO: Check if void type correct
+    pub orig_ret: *mut c_void,
+    pub override_ret: *mut c_void,
+}
+
+pub type meta_globals_t = meta_globals_s;
 
 /// Bindings are work in progress undone definitions are marked as unfinished (and not working of course)
 // TODO: Specify all definitions and remove
