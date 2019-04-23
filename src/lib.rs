@@ -6,23 +6,25 @@ extern crate metamod_bindgen;
 
 pub mod metamod;
 
+use std::ffi::CStr;
 use std::os::raw::{c_char, c_int};
-use std::ffi::{CStr};
 
 use metamod::PLUG_LOADTIME::PT_CHANGELEVEL;
-use metamod::{META_INTERFACE_VERSION, plugin_info_t};
-use metamod_bindgen::{META_FUNCTIONS, enginefuncs_t, globalvars_t, meta_globals_t, gamedll_funcs_t};
+use metamod::{plugin_info_t, META_INTERFACE_VERSION};
+use metamod_bindgen::{
+    enginefuncs_t, gamedll_funcs_t, globalvars_t, meta_globals_t, META_FUNCTIONS,
+};
 
 const PLUGIN_INFO: plugin_info_t = plugin_info_t {
-    ifvers:  META_INTERFACE_VERSION,
-    name:    cstr!("MetaRust"),
+    ifvers: META_INTERFACE_VERSION,
+    name: cstr!("MetaRust"),
     version: cstr!("0.0.1"),
-    date:    cstr!("14.07.2018"),
-    author:  cstr!("Fedcomp"),
-    url:     cstr!("http://amx-x/ru"),
-    logtag:  cstr!("METARUST"),
+    date: cstr!("14.07.2018"),
+    author: cstr!("Fedcomp"),
+    url: cstr!("http://amx-x/ru"),
+    logtag: cstr!("METARUST"),
     loadable: PT_CHANGELEVEL as i32,
-    unloadable: PT_CHANGELEVEL as i32
+    unloadable: PT_CHANGELEVEL as i32,
 };
 
 const META_FUNCTIONS_TABLE: META_FUNCTIONS = META_FUNCTIONS {
@@ -40,7 +42,12 @@ static mut gpGlobals: Option<*const globalvars_t> = None;
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub unsafe extern "C" fn Meta_Attach(plug_loadtime: i32, pFunctionTable: *const META_FUNCTIONS, pMGlobals: *const meta_globals_t, pGamedllFuncs: *const gamedll_funcs_t) -> c_int {
+pub unsafe extern "C" fn Meta_Attach(
+    _plug_loadtime: i32,
+    _pFunctionTable: *const META_FUNCTIONS,
+    _pMGlobals: *const meta_globals_t,
+    _pGamedllFuncs: *const gamedll_funcs_t,
+) -> c_int {
     println!("<<<<< CHECKING GLOBALS >>>>>");
     if let Some(globals) = gpGlobals {
         println!("{:?}", *globals);
@@ -65,7 +72,11 @@ pub extern "C" fn Meta_Detach() -> c_int {
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub unsafe extern "C" fn Meta_Query(ifvers: *const c_char, pinfo: *mut *const plugin_info_t, _mutil_funcs: c_char) -> c_int {
+pub unsafe extern "C" fn Meta_Query(
+    ifvers: *const c_char,
+    pinfo: *mut *const plugin_info_t,
+    _mutil_funcs: c_char,
+) -> c_int {
     let _interface_version = CStr::from_ptr(ifvers);
     *pinfo = &PLUGIN_INFO;
     1
@@ -73,6 +84,9 @@ pub unsafe extern "C" fn Meta_Query(ifvers: *const c_char, pinfo: *mut *const pl
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub unsafe extern "C" fn GiveFnptrsToDll(pengfuncsFromEngine: *const enginefuncs_t, pGlobals: *const globalvars_t) {
+pub unsafe extern "C" fn GiveFnptrsToDll(
+    _pengfuncsFromEngine: *const enginefuncs_t,
+    pGlobals: *const globalvars_t,
+) {
     gpGlobals = Some(pGlobals);
 }
