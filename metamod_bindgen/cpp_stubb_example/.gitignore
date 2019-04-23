@@ -7,5 +7,4 @@
 *.exe
 
 /build/*
-!/build/.keep
-/rust/target/
+/cmake-build-debug
