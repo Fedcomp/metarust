@@ -14,3 +14,4 @@ strict = [] # Treat warnings as a build error
 [dependencies]
 cstr-macro = "0.1.0"
 metamod-bindgen = { path = "metamod_bindgen" }
+metamod-sys = { path = "metamod_sys" }

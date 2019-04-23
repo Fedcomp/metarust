@@ -4,13 +4,10 @@ use std::ffi::CStr;
 use std::os::raw::{c_char, c_int};
 
 use cstr_macro::cstr;
-
-pub mod metamod;
-
-use crate::metamod::{plugin_info_t, META_INTERFACE_VERSION, PLUG_LOADTIME::PT_CHANGELEVEL};
 use metamod_bindgen::{
     enginefuncs_t, gamedll_funcs_t, globalvars_t, meta_globals_t, META_FUNCTIONS,
 };
+use metamod_sys::{plugin_info_t, META_INTERFACE_VERSION, PLUG_LOADTIME::PT_CHANGELEVEL};
 
 const PLUGIN_INFO: plugin_info_t = plugin_info_t {
     ifvers: META_INTERFACE_VERSION,
@@ -20,8 +17,8 @@ const PLUGIN_INFO: plugin_info_t = plugin_info_t {
     author: cstr!("Fedcomp"),
     url: cstr!("http://amx-x/ru"),
     logtag: cstr!("METARUST"),
-    loadable: PT_CHANGELEVEL as i32,
-    unloadable: PT_CHANGELEVEL as i32,
+    loadable: PT_CHANGELEVEL,
+    unloadable: PT_CHANGELEVEL,
 };
 
 const META_FUNCTIONS_TABLE: META_FUNCTIONS = META_FUNCTIONS {
