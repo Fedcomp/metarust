@@ -5,10 +5,11 @@ use std::ffi::CStr;
 use std::os::raw::{c_char, c_int};
 
 use cstr_macro::cstr;
+use hlsdk_sys::DLL_FUNCTIONS;
 use metamod_bindgen::{enginefuncs_t, gamedll_funcs_t, globalvars_t};
 use metamod_sys::{
-    meta_globals_t, plugin_info_t, DLL_FUNCTIONS, GETENTITYAPI_FN_INTERFACE_VERSION,
-    META_FUNCTIONS, META_INTERFACE_VERSION,
+    meta_globals_t, plugin_info_t, GETENTITYAPI_FN_INTERFACE_VERSION, META_FUNCTIONS,
+    META_INTERFACE_VERSION,
     META_RES::*,
     PLUG_LOADTIME::{self, PT_CHANGELEVEL},
 };

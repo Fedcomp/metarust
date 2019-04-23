@@ -208,6 +208,7 @@ name = "metamod-sys"
 version = "0.0.1"
 dependencies = [
  "cstr-macro 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "hlsdk-sys 0.0.1",
 ]
 
 [[package]]
