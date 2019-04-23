@@ -1,4 +1,5 @@
 #![cfg_attr(feature = "strict", deny(warnings))]
+#![allow(non_snake_case)]
 
 use std::ffi::CStr;
 use std::os::raw::{c_char, c_int};
@@ -6,7 +7,8 @@ use std::os::raw::{c_char, c_int};
 use cstr_macro::cstr;
 use metamod_bindgen::{enginefuncs_t, gamedll_funcs_t, globalvars_t, meta_globals_t};
 use metamod_sys::{
-    plugin_info_t, META_FUNCTIONS, META_INTERFACE_VERSION,
+    plugin_info_t, DLL_FUNCTIONS, GETENTITYAPI_FN_INTERFACE_VERSION, META_FUNCTIONS,
+    META_INTERFACE_VERSION,
     PLUG_LOADTIME::{self, PT_CHANGELEVEL},
 };
 
@@ -23,7 +25,7 @@ const PLUGIN_INFO: plugin_info_t = plugin_info_t {
 };
 
 const META_FUNCTIONS_TABLE: META_FUNCTIONS = META_FUNCTIONS {
-    pfnGetEntityAPI: None,
+    pfnGetEntityAPI: Some(get_entity_api),
     pfnGetEntityAPI_Post: None,
     pfnGetEntityAPI2: None,
     pfnGetEntityAPI2_Post: None,
@@ -33,7 +35,76 @@ const META_FUNCTIONS_TABLE: META_FUNCTIONS = META_FUNCTIONS {
     pfnGetEngineFunctions_Post: None,
 };
 
+const DLL_FUNCTIONS_TABLE: DLL_FUNCTIONS = DLL_FUNCTIONS {
+    pfnGameInit: None,
+    pfnSpawn: None,
+    pfnThink: None,
+    pfnUse: None,
+    pfnTouch: None,
+    pfnBlocked: None,
+    pfnKeyValue: None,
+    pfnSave: None,
+    pfnRestore: None,
+    pfnSetAbsBox: None,
+    pfnSaveWriteFields: None,
+    pfnSaveReadFields: None,
+    pfnSaveGlobalState: None,
+    pfnRestoreGlobalState: None,
+    pfnResetGlobalState: None,
+    pfnClientConnect: None,
+    pfnClientDisconnect: None,
+    pfnClientKill: None,
+    pfnClientPutInServer: None,
+    pfnClientCommand: None,
+    pfnClientUserInfoChanged: None,
+    pfnServerActivate: None,
+    pfnServerDeactivate: None,
+    pfnPlayerPreThink: None,
+    pfnPlayerPostThink: None,
+    pfnStartFrame: Some(start_frame),
+    pfnParmsNewLevel: None,
+    pfnParmsChangeLevel: None,
+    pfnGetGameDescription: None,
+    pfnPlayerCustomization: None,
+    pfnSpectatorConnect: None,
+    pfnSpectatorDisconnect: None,
+    pfnSpectatorThink: None,
+    pfnSys_Error: None,
+    pfnPM_Move: None,
+    pfnPM_Init: None,
+    pfnPM_FindTextureType: None,
+    pfnSetupVisibility: None,
+    pfnUpdateClientData: None,
+    pfnAddToFullPack: None,
+    pfnCreateBaseline: None,
+    pfnRegisterEncoders: None,
+    pfnGetWeaponData: None,
+    pfnCmdStart: None,
+    pfnCmdEnd: None,
+    pfnConnectionlessPacket: None,
+    pfnGetHullBounds: None,
+    pfnCreateInstancedBaselines: None,
+    pfnInconsistentFile: None,
+    pfnAllowLagCompensation: None,
+};
+
 static mut gpGlobals: Option<*const globalvars_t> = None;
+
+pub unsafe extern "C" fn get_entity_api(
+    pFunctionTable: *mut DLL_FUNCTIONS,
+    interfaceVersion: c_int,
+) -> c_int {
+    if interfaceVersion != GETENTITYAPI_FN_INTERFACE_VERSION {
+        panic!(
+            "Inconsistent GETENTITYAPI_FN_INTERFACE_VERSION, theirs: {}, ours: {}",
+            interfaceVersion, GETENTITYAPI_FN_INTERFACE_VERSION
+        )
+    }
+
+    *pFunctionTable = DLL_FUNCTIONS_TABLE;
+
+    1
+}
 
 #[allow(non_snake_case)]
 #[no_mangle]
@@ -73,3 +144,5 @@ pub unsafe extern "C" fn GiveFnptrsToDll(
 ) {
     gpGlobals = Some(pGlobals);
 }
+
+pub extern "C" fn start_frame() {}
