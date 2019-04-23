@@ -1,5 +1,7 @@
 use std::os::raw::c_char;
 
+use cstr_macro::cstr;
+
 #[allow(non_camel_case_types)]
 pub enum PLUG_LOADTIME {
     PT_NEVER,

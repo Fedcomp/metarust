@@ -1,16 +1,13 @@
 #![cfg_attr(feature = "strict", deny(warnings))]
 
-#[macro_use(cstr)]
-extern crate cstr_macro;
-extern crate metamod_bindgen;
-
-pub mod metamod;
-
 use std::ffi::CStr;
 use std::os::raw::{c_char, c_int};
 
-use metamod::PLUG_LOADTIME::PT_CHANGELEVEL;
-use metamod::{plugin_info_t, META_INTERFACE_VERSION};
+use cstr_macro::cstr;
+
+pub mod metamod;
+
+use crate::metamod::{plugin_info_t, META_INTERFACE_VERSION, PLUG_LOADTIME::PT_CHANGELEVEL};
 use metamod_bindgen::{
     enginefuncs_t, gamedll_funcs_t, globalvars_t, meta_globals_t, META_FUNCTIONS,
 };
