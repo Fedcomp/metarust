@@ -1,5 +1,6 @@
 #![deny(warnings)]
 #![allow(non_camel_case_types)]
+#![allow(non_snake_case)]
 
 use std::os::raw::c_char;
 
@@ -48,4 +49,23 @@ pub struct plugin_info_t {
     pub loadable: PLUG_LOADTIME,
     /// when plugin is unloadable
     pub unloadable: PLUG_LOADTIME,
+}
+
+/// Bindings are work in progress undone definitions are marked as unfinished (and not working of course)
+type UNFINISHED_FUNCTION = unsafe extern "C" fn();
+
+/// see UNFINISHED_FUNCTION
+type UNFINISHED_FUNCTION_POINTER = Option<UNFINISHED_FUNCTION>;
+
+#[repr(C)]
+#[derive(Debug)]
+pub struct META_FUNCTIONS {
+    pub pfnGetEntityAPI: UNFINISHED_FUNCTION_POINTER,
+    pub pfnGetEntityAPI_Post: UNFINISHED_FUNCTION_POINTER,
+    pub pfnGetEntityAPI2: UNFINISHED_FUNCTION_POINTER,
+    pub pfnGetEntityAPI2_Post: UNFINISHED_FUNCTION_POINTER,
+    pub pfnGetNewDLLFunctions: UNFINISHED_FUNCTION_POINTER,
+    pub pfnGetNewDLLFunctions_Post: UNFINISHED_FUNCTION_POINTER,
+    pub pfnGetEngineFunctions: UNFINISHED_FUNCTION_POINTER,
+    pub pfnGetEngineFunctions_Post: UNFINISHED_FUNCTION_POINTER,
 }

@@ -4,10 +4,11 @@ use std::ffi::CStr;
 use std::os::raw::{c_char, c_int};
 
 use cstr_macro::cstr;
-use metamod_bindgen::{
-    enginefuncs_t, gamedll_funcs_t, globalvars_t, meta_globals_t, META_FUNCTIONS,
+use metamod_bindgen::{enginefuncs_t, gamedll_funcs_t, globalvars_t, meta_globals_t};
+use metamod_sys::{
+    plugin_info_t, META_FUNCTIONS, META_INTERFACE_VERSION,
+    PLUG_LOADTIME::{self, PT_CHANGELEVEL},
 };
-use metamod_sys::{plugin_info_t, META_INTERFACE_VERSION, PLUG_LOADTIME::PT_CHANGELEVEL};
 
 const PLUGIN_INFO: plugin_info_t = plugin_info_t {
     ifvers: META_INTERFACE_VERSION,
@@ -37,24 +38,12 @@ static mut gpGlobals: Option<*const globalvars_t> = None;
 #[allow(non_snake_case)]
 #[no_mangle]
 pub unsafe extern "C" fn Meta_Attach(
-    _plug_loadtime: i32,
-    _pFunctionTable: *const META_FUNCTIONS,
+    _plug_loadtime: PLUG_LOADTIME,
+    pFunctionTable: *mut META_FUNCTIONS,
     _pMGlobals: *const meta_globals_t,
     _pGamedllFuncs: *const gamedll_funcs_t,
 ) -> c_int {
-    println!("<<<<< CHECKING GLOBALS >>>>>");
-    if let Some(globals) = gpGlobals {
-        println!("{:?}", *globals);
-        println!("Trying map name");
-        let p_map = (*globals).mapname;
-        println!("p_map is {:?}", p_map);
-
-        if p_map != 0 {
-            let st = CStr::from_ptr(p_map as *const c_char);
-            println!("Mapname: {:?}", st);
-        }
-    }
-
+    *pFunctionTable = META_FUNCTIONS_TABLE;
     1
 }
 
