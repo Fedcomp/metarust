@@ -14,6 +14,10 @@ pub type qboolean = c_int;
 pub type string_t = c_uint;
 pub type byte = c_uchar;
 
+pub type BOOL = c_int;
+pub const TRUE: BOOL = 1;
+pub const FALSE: BOOL = 0;
+
 pub type edict_t = edict_s;
 pub type link_t = link_s;
 pub type entvars_t = entvars_s;

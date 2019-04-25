@@ -5,7 +5,7 @@ use std::ffi::CStr;
 use std::os::raw::{c_char, c_int};
 
 use cstr_macro::cstr;
-use hlsdk_sys::DLL_FUNCTIONS;
+use hlsdk_sys::{BOOL, DLL_FUNCTIONS, FALSE, TRUE};
 use metamod_bindgen::{enginefuncs_t, gamedll_funcs_t, globalvars_t};
 use metamod_sys::{
     meta_globals_t, plugin_info_t, GETENTITYAPI_FN_INTERFACE_VERSION, META_FUNCTIONS,
@@ -96,7 +96,7 @@ static mut gpMetaGlobals: Option<&mut meta_globals_t> = None;
 pub unsafe extern "C" fn get_entity_api(
     pFunctionTable: *mut DLL_FUNCTIONS,
     interfaceVersion: c_int,
-) -> c_int {
+) -> BOOL {
     if interfaceVersion != GETENTITYAPI_FN_INTERFACE_VERSION {
         panic!(
             "Inconsistent GETENTITYAPI_FN_INTERFACE_VERSION, theirs: {}, ours: {}",
@@ -107,7 +107,7 @@ pub unsafe extern "C" fn get_entity_api(
     // Fill our pre hooks list
     *pFunctionTable = gFunctionTable;
 
-    1
+    TRUE
 }
 
 #[allow(non_snake_case)]
@@ -117,16 +117,17 @@ pub unsafe extern "C" fn Meta_Attach(
     pFunctionTable: *mut META_FUNCTIONS,
     pMGlobals: *mut meta_globals_t,
     _pGamedllFuncs: *const gamedll_funcs_t,
-) -> c_int {
+) -> BOOL {
     *pFunctionTable = META_FUNCTIONS_TABLE;
     gpMetaGlobals = Some(&mut *pMGlobals);
-    1
+
+    TRUE
 }
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Meta_Detach() -> c_int {
-    1
+pub extern "C" fn Meta_Detach() -> BOOL {
+    TRUE
 }
 
 #[allow(non_snake_case)]
@@ -135,10 +136,11 @@ pub unsafe extern "C" fn Meta_Query(
     ifvers: *const c_char,
     pinfo: *mut *const plugin_info_t,
     _mutil_funcs: c_char,
-) -> c_int {
+) -> BOOL {
     let _interface_version = CStr::from_ptr(ifvers);
     *pinfo = &PLUGIN_INFO;
-    1
+
+    TRUE
 }
 
 #[allow(non_snake_case)]
