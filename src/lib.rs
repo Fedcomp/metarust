@@ -224,6 +224,20 @@ pub unsafe extern "C" fn get_entity_api2_post(
 
 /* Library defined hooks */
 
+use hlsdk_sys::string_t;
+use std::borrow::Cow;
+
+fn read_string<'a>(string_offset: string_t) -> Cow<'a, str> {
+    // Leave me issue or comment where you may read string_t without gpGlobals being initialized
+    let globals =
+        unsafe { gpGlobals.expect("Engine globals should be already initialized to this moment") };
+    let base_offset = globals.pStringBase as string_t;
+    let string_t_addr = (base_offset + string_offset) as *const c_char;
+    let cstr = unsafe { CStr::from_ptr(string_t_addr) };
+
+    cstr.to_string_lossy()
+}
+
 // amxmodx's plugin_init
 pub unsafe extern "C" fn server_activate_post(
     _pEdictList: *const edict_t,
@@ -232,11 +246,8 @@ pub unsafe extern "C" fn server_activate_post(
 ) {
     println!("plugin_init()");
     println!("gpGlobals: {:?}", gpGlobals.unwrap());
-    //    #define STRING(offset)		((const char *)(gpGlobals->pStringBase + (unsigned int)(offset)))
-    let string_base: *const c_char = gpGlobals.unwrap().pStringBase;
-    let map_offset = gpGlobals.unwrap().mapname;
-    let offset: *const c_char = ((string_base as u32) + map_offset) as *const c_char;
-    println!("Map name: {:?}", CStr::from_ptr(offset));
+
+    println!("Map name: {:?}", read_string(gpGlobals.unwrap().mapname));
 
     let meta_globals = gpMetaGlobals
         .as_mut()
