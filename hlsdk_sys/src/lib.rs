@@ -192,6 +192,9 @@ pub type fnParmsChangeLevel = unsafe extern "C" fn();
 pub type fnRegisterEncoders = unsafe extern "C" fn();
 // TODO: Description
 pub type fnCreateInstancedBaselines = unsafe extern "C" fn();
+// TODO: Description
+pub type fnServerActivate =
+    unsafe extern "C" fn(pEdictList: *const edict_t, edictCount: i32, clientMax: i32);
 
 /// List of engine callbacks
 #[repr(C)]
@@ -218,7 +221,7 @@ pub struct DLL_FUNCTIONS {
     pub pfnClientPutInServer: UNFINISHED_FUNCTION_POINTER,
     pub pfnClientCommand: UNFINISHED_FUNCTION_POINTER,
     pub pfnClientUserInfoChanged: UNFINISHED_FUNCTION_POINTER,
-    pub pfnServerActivate: UNFINISHED_FUNCTION_POINTER,
+    pub pfnServerActivate: Option<fnServerActivate>,
     pub pfnServerDeactivate: UNFINISHED_FUNCTION_POINTER,
     pub pfnPlayerPreThink: UNFINISHED_FUNCTION_POINTER,
     pub pfnPlayerPostThink: UNFINISHED_FUNCTION_POINTER,

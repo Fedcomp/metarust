@@ -5,7 +5,7 @@ use std::ffi::CStr;
 use std::os::raw::{c_char, c_int};
 
 use cstr_macro::cstr;
-use hlsdk_sys::{BOOL, DLL_FUNCTIONS, TRUE};
+use hlsdk_sys::{edict_t, BOOL, DLL_FUNCTIONS, TRUE};
 use metamod_bindgen::{enginefuncs_t, gamedll_funcs_t, globalvars_t};
 use metamod_sys::{
     meta_globals_t, plugin_info_t, GETENTITYAPI_FN_INTERFACE_VERSION, META_FUNCTIONS,
@@ -63,7 +63,7 @@ const gFunctionTable: DLL_FUNCTIONS = DLL_FUNCTIONS {
     pfnServerDeactivate: None,
     pfnPlayerPreThink: None,
     pfnPlayerPostThink: None,
-    pfnStartFrame: Some(start_frame),
+    pfnStartFrame: None,
     pfnParmsNewLevel: None,
     pfnParmsChangeLevel: None,
     pfnGetGameDescription: None,
@@ -112,11 +112,11 @@ const gFunctionTable_Post: DLL_FUNCTIONS = DLL_FUNCTIONS {
     pfnClientPutInServer: None,
     pfnClientCommand: None,
     pfnClientUserInfoChanged: None,
-    pfnServerActivate: None,
+    pfnServerActivate: Some(server_activate_post),
     pfnServerDeactivate: None,
     pfnPlayerPreThink: None,
     pfnPlayerPostThink: None,
-    pfnStartFrame: Some(start_frame_post),
+    pfnStartFrame: None,
     pfnParmsNewLevel: None,
     pfnParmsChangeLevel: None,
     pfnGetGameDescription: None,
@@ -224,22 +224,17 @@ pub unsafe extern "C" fn get_entity_api2_post(
 
 /* Library defined hooks */
 
-pub unsafe extern "C" fn start_frame() {
+// amxmodx's plugin_init
+pub unsafe extern "C" fn server_activate_post(
+    _pEdictList: *const edict_t,
+    _edictCount: i32,
+    _clientMax: i32,
+) {
+    println!("plugin_init()");
+
     let meta_globals = gpMetaGlobals
         .as_mut()
         .expect("Meta globals should be already initialized to this moment");
-
-    println!("DUUUUUUDEEE!!");
-
-    meta_globals.mres = MRES_IGNORED;
-}
-
-pub unsafe extern "C" fn start_frame_post() {
-    let meta_globals = gpMetaGlobals
-        .as_mut()
-        .expect("Meta globals should be already initialized to this moment");
-
-    println!("DUUUUUUDEEE!! (post)");
 
     meta_globals.mres = MRES_IGNORED;
 }
