@@ -1,5 +1,5 @@
 #![cfg_attr(feature = "strict", deny(warnings))]
-#![allow(non_snake_case)]
+#![allow(non_camel_case_types, non_snake_case, non_upper_case_globals)]
 
 use std::ffi::CStr;
 use std::os::raw::{c_char, c_int};
@@ -37,7 +37,7 @@ const META_FUNCTIONS_TABLE: META_FUNCTIONS = META_FUNCTIONS {
     pfnGetEngineFunctions_Post: None,
 };
 
-const DLL_FUNCTIONS_TABLE: DLL_FUNCTIONS = DLL_FUNCTIONS {
+const gFunctionTable: DLL_FUNCTIONS = DLL_FUNCTIONS {
     pfnGameInit: None,
     pfnSpawn: None,
     pfnThink: None,
@@ -90,7 +90,7 @@ const DLL_FUNCTIONS_TABLE: DLL_FUNCTIONS = DLL_FUNCTIONS {
     pfnAllowLagCompensation: None,
 };
 
-static mut gpGlobals: Option<*const globalvars_t> = None;
+static mut gpGlobals: Option<&globalvars_t> = None;
 static mut gpMetaGlobals: Option<&mut meta_globals_t> = None;
 
 pub unsafe extern "C" fn get_entity_api(
@@ -104,7 +104,8 @@ pub unsafe extern "C" fn get_entity_api(
         )
     }
 
-    *pFunctionTable = DLL_FUNCTIONS_TABLE;
+    // Fill our pre hooks list
+    *pFunctionTable = gFunctionTable;
 
     1
 }
@@ -146,7 +147,7 @@ pub unsafe extern "C" fn GiveFnptrsToDll(
     _pengfuncsFromEngine: *const enginefuncs_t,
     pGlobals: *const globalvars_t,
 ) {
-    gpGlobals = Some(pGlobals);
+    gpGlobals = Some(&*pGlobals);
 }
 
 pub unsafe extern "C" fn start_frame() {
