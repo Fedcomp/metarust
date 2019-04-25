@@ -143,7 +143,7 @@ const gFunctionTable_Post: DLL_FUNCTIONS = DLL_FUNCTIONS {
     pfnAllowLagCompensation: None,
 };
 
-static mut gpGlobals: Option<&globalvars_t> = None;
+pub static mut gpGlobals: Option<&globalvars_t> = None;
 static mut gpMetaGlobals: Option<&mut meta_globals_t> = None;
 
 /* Initialization pointer/hook processing functions */
@@ -231,6 +231,12 @@ pub unsafe extern "C" fn server_activate_post(
     _clientMax: i32,
 ) {
     println!("plugin_init()");
+    println!("gpGlobals: {:?}", gpGlobals.unwrap());
+    //    #define STRING(offset)		((const char *)(gpGlobals->pStringBase + (unsigned int)(offset)))
+    let string_base: *const c_char = gpGlobals.unwrap().pStringBase;
+    let map_offset = gpGlobals.unwrap().mapname;
+    let offset: *const c_char = ((string_base as u32) + map_offset) as *const c_char;
+    println!("Map name: {:?}", CStr::from_ptr(offset));
 
     let meta_globals = gpMetaGlobals
         .as_mut()
