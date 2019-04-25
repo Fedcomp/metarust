@@ -30,7 +30,7 @@ const gMetaFunctionTable: META_FUNCTIONS = META_FUNCTIONS {
     pfnGetEntityAPI: None,
     pfnGetEntityAPI_Post: None,
     pfnGetEntityAPI2: Some(get_entity_api2),
-    pfnGetEntityAPI2_Post: None,
+    pfnGetEntityAPI2_Post: Some(get_entity_api2_post),
     pfnGetNewDLLFunctions: None,
     pfnGetNewDLLFunctions_Post: None,
     pfnGetEngineFunctions: None,
@@ -64,6 +64,59 @@ const gFunctionTable: DLL_FUNCTIONS = DLL_FUNCTIONS {
     pfnPlayerPreThink: None,
     pfnPlayerPostThink: None,
     pfnStartFrame: Some(start_frame),
+    pfnParmsNewLevel: None,
+    pfnParmsChangeLevel: None,
+    pfnGetGameDescription: None,
+    pfnPlayerCustomization: None,
+    pfnSpectatorConnect: None,
+    pfnSpectatorDisconnect: None,
+    pfnSpectatorThink: None,
+    pfnSys_Error: None,
+    pfnPM_Move: None,
+    pfnPM_Init: None,
+    pfnPM_FindTextureType: None,
+    pfnSetupVisibility: None,
+    pfnUpdateClientData: None,
+    pfnAddToFullPack: None,
+    pfnCreateBaseline: None,
+    pfnRegisterEncoders: None,
+    pfnGetWeaponData: None,
+    pfnCmdStart: None,
+    pfnCmdEnd: None,
+    pfnConnectionlessPacket: None,
+    pfnGetHullBounds: None,
+    pfnCreateInstancedBaselines: None,
+    pfnInconsistentFile: None,
+    pfnAllowLagCompensation: None,
+};
+
+const gFunctionTable_Post: DLL_FUNCTIONS = DLL_FUNCTIONS {
+    pfnGameInit: None,
+    pfnSpawn: None,
+    pfnThink: None,
+    pfnUse: None,
+    pfnTouch: None,
+    pfnBlocked: None,
+    pfnKeyValue: None,
+    pfnSave: None,
+    pfnRestore: None,
+    pfnSetAbsBox: None,
+    pfnSaveWriteFields: None,
+    pfnSaveReadFields: None,
+    pfnSaveGlobalState: None,
+    pfnRestoreGlobalState: None,
+    pfnResetGlobalState: None,
+    pfnClientConnect: None,
+    pfnClientDisconnect: None,
+    pfnClientKill: None,
+    pfnClientPutInServer: None,
+    pfnClientCommand: None,
+    pfnClientUserInfoChanged: None,
+    pfnServerActivate: None,
+    pfnServerDeactivate: None,
+    pfnPlayerPreThink: None,
+    pfnPlayerPostThink: None,
+    pfnStartFrame: Some(start_frame_post),
     pfnParmsNewLevel: None,
     pfnParmsChangeLevel: None,
     pfnGetGameDescription: None,
@@ -151,6 +204,24 @@ pub unsafe extern "C" fn get_entity_api2(
     TRUE
 }
 
+pub unsafe extern "C" fn get_entity_api2_post(
+    pFunctionTable: *mut DLL_FUNCTIONS,
+    interfaceVersion: *const c_int,
+) -> BOOL {
+    // TODO: Make fail handling as in metamod plugin example
+    if *interfaceVersion != GETENTITYAPI_FN_INTERFACE_VERSION {
+        panic!(
+            "Inconsistent GETENTITYAPI_FN_INTERFACE_VERSION, theirs: {}, ours: {}",
+            *interfaceVersion, GETENTITYAPI_FN_INTERFACE_VERSION
+        )
+    }
+
+    // Return our hook list to engine
+    *pFunctionTable = gFunctionTable_Post;
+
+    TRUE
+}
+
 /* Library defined hooks */
 
 pub unsafe extern "C" fn start_frame() {
@@ -159,6 +230,16 @@ pub unsafe extern "C" fn start_frame() {
         .expect("Meta globals should be already initialized to this moment");
 
     println!("DUUUUUUDEEE!!");
+
+    meta_globals.mres = MRES_IGNORED;
+}
+
+pub unsafe extern "C" fn start_frame_post() {
+    let meta_globals = gpMetaGlobals
+        .as_mut()
+        .expect("Meta globals should be already initialized to this moment");
+
+    println!("DUUUUUUDEEE!! (post)");
 
     meta_globals.mres = MRES_IGNORED;
 }
