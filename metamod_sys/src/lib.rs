@@ -88,13 +88,18 @@ type UNFINISHED_FUNCTION_POINTER = Option<UNFINISHED_FUNCTION>;
 pub type GETENTITYAPI_FN =
     unsafe extern "C" fn(pFunctionTable: *mut DLL_FUNCTIONS, interfaceVersion: c_int) -> c_int;
 
+pub type GETENTITYAPI2_FN = unsafe extern "C" fn(
+    pFunctionTable: *mut DLL_FUNCTIONS,
+    interfaceVersion: *const c_int,
+) -> c_int;
+
 #[repr(C)]
 #[derive(Debug)]
 pub struct META_FUNCTIONS {
     pub pfnGetEntityAPI: Option<GETENTITYAPI_FN>,
-    pub pfnGetEntityAPI_Post: UNFINISHED_FUNCTION_POINTER,
-    pub pfnGetEntityAPI2: UNFINISHED_FUNCTION_POINTER,
-    pub pfnGetEntityAPI2_Post: UNFINISHED_FUNCTION_POINTER,
+    pub pfnGetEntityAPI_Post: Option<GETENTITYAPI_FN>,
+    pub pfnGetEntityAPI2: Option<GETENTITYAPI2_FN>,
+    pub pfnGetEntityAPI2_Post: Option<GETENTITYAPI2_FN>,
     pub pfnGetNewDLLFunctions: UNFINISHED_FUNCTION_POINTER,
     pub pfnGetNewDLLFunctions_Post: UNFINISHED_FUNCTION_POINTER,
     pub pfnGetEngineFunctions: UNFINISHED_FUNCTION_POINTER,

@@ -5,7 +5,7 @@ use std::ffi::CStr;
 use std::os::raw::{c_char, c_int};
 
 use cstr_macro::cstr;
-use hlsdk_sys::{BOOL, DLL_FUNCTIONS, FALSE, TRUE};
+use hlsdk_sys::{BOOL, DLL_FUNCTIONS, TRUE};
 use metamod_bindgen::{enginefuncs_t, gamedll_funcs_t, globalvars_t};
 use metamod_sys::{
     meta_globals_t, plugin_info_t, GETENTITYAPI_FN_INTERFACE_VERSION, META_FUNCTIONS,
@@ -26,10 +26,10 @@ const PLUGIN_INFO: plugin_info_t = plugin_info_t {
     unloadable: PT_CHANGELEVEL,
 };
 
-const META_FUNCTIONS_TABLE: META_FUNCTIONS = META_FUNCTIONS {
-    pfnGetEntityAPI: Some(get_entity_api),
+const gMetaFunctionTable: META_FUNCTIONS = META_FUNCTIONS {
+    pfnGetEntityAPI: None,
     pfnGetEntityAPI_Post: None,
-    pfnGetEntityAPI2: None,
+    pfnGetEntityAPI2: Some(get_entity_api2),
     pfnGetEntityAPI2_Post: None,
     pfnGetNewDLLFunctions: None,
     pfnGetNewDLLFunctions_Post: None,
@@ -93,24 +93,8 @@ const gFunctionTable: DLL_FUNCTIONS = DLL_FUNCTIONS {
 static mut gpGlobals: Option<&globalvars_t> = None;
 static mut gpMetaGlobals: Option<&mut meta_globals_t> = None;
 
-pub unsafe extern "C" fn get_entity_api(
-    pFunctionTable: *mut DLL_FUNCTIONS,
-    interfaceVersion: c_int,
-) -> BOOL {
-    if interfaceVersion != GETENTITYAPI_FN_INTERFACE_VERSION {
-        panic!(
-            "Inconsistent GETENTITYAPI_FN_INTERFACE_VERSION, theirs: {}, ours: {}",
-            interfaceVersion, GETENTITYAPI_FN_INTERFACE_VERSION
-        )
-    }
+/* Initialization pointer/hook processing functions */
 
-    // Fill our pre hooks list
-    *pFunctionTable = gFunctionTable;
-
-    TRUE
-}
-
-#[allow(non_snake_case)]
 #[no_mangle]
 pub unsafe extern "C" fn Meta_Attach(
     _plug_loadtime: PLUG_LOADTIME,
@@ -118,19 +102,17 @@ pub unsafe extern "C" fn Meta_Attach(
     pMGlobals: *mut meta_globals_t,
     _pGamedllFuncs: *const gamedll_funcs_t,
 ) -> BOOL {
-    *pFunctionTable = META_FUNCTIONS_TABLE;
+    *pFunctionTable = gMetaFunctionTable;
     gpMetaGlobals = Some(&mut *pMGlobals);
 
     TRUE
 }
 
-#[allow(non_snake_case)]
 #[no_mangle]
 pub extern "C" fn Meta_Detach() -> BOOL {
     TRUE
 }
 
-#[allow(non_snake_case)]
 #[no_mangle]
 pub unsafe extern "C" fn Meta_Query(
     ifvers: *const c_char,
@@ -143,7 +125,6 @@ pub unsafe extern "C" fn Meta_Query(
     TRUE
 }
 
-#[allow(non_snake_case)]
 #[no_mangle]
 pub unsafe extern "C" fn GiveFnptrsToDll(
     _pengfuncsFromEngine: *const enginefuncs_t,
@@ -152,10 +133,32 @@ pub unsafe extern "C" fn GiveFnptrsToDll(
     gpGlobals = Some(&*pGlobals);
 }
 
+pub unsafe extern "C" fn get_entity_api2(
+    pFunctionTable: *mut DLL_FUNCTIONS,
+    interfaceVersion: *const c_int,
+) -> BOOL {
+    // TODO: Make fail handling as in metamod plugin example
+    if *interfaceVersion != GETENTITYAPI_FN_INTERFACE_VERSION {
+        panic!(
+            "Inconsistent GETENTITYAPI_FN_INTERFACE_VERSION, theirs: {}, ours: {}",
+            *interfaceVersion, GETENTITYAPI_FN_INTERFACE_VERSION
+        )
+    }
+
+    // Return our hook list to engine
+    *pFunctionTable = gFunctionTable;
+
+    TRUE
+}
+
+/* Library defined hooks */
+
 pub unsafe extern "C" fn start_frame() {
     let meta_globals = gpMetaGlobals
         .as_mut()
         .expect("Meta globals should be already initialized to this moment");
+
+    println!("DUUUUUUDEEE!!");
 
     meta_globals.mres = MRES_IGNORED;
 }
