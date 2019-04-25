@@ -1,6 +1,5 @@
 #![deny(warnings)]
-#![allow(non_camel_case_types)]
-#![allow(non_snake_case)]
+#![allow(non_camel_case_types, non_snake_case, non_upper_case_globals)]
 
 use std::os::raw::{c_char, c_int, c_void};
 
@@ -79,7 +78,7 @@ pub struct meta_globals_s {
 
 pub type meta_globals_t = meta_globals_s;
 
-/// Bindings are work in progress undone definitions are marked as unfinished (and not working of course)
+/// Bindings are work in progress and undone definitions are marked as unfinished (and not working of course)
 // TODO: Specify all definitions and remove
 type UNFINISHED_FUNCTION = unsafe extern "C" fn();
 
