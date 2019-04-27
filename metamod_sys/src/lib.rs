@@ -18,6 +18,7 @@ pub const GETENTITYAPI_FN_INTERFACE_VERSION: c_int = 140;
 
 /// When metamod plugin can be loaded and unloaded
 #[repr(u32)]
+#[derive(Debug, Clone, Copy)]
 pub enum PLUG_LOADTIME {
     /// After loaded, should never be unloaded (?)
     PT_NEVER = 0,
