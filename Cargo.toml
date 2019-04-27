@@ -1,6 +1,6 @@
 [package]
-name = "metarust"
-version = "0.1.0"
+name = "metarust_trace_plugin"
+version = "0.0.1"
 authors = ["Fedcomp"]
 edition = "2018"
 publish = false
@@ -12,7 +12,4 @@ crate-type = ["dylib"]
 strict = [] # Treat warnings as a build error
 
 [dependencies]
-cstr-macro = "0.1.0"
-metamod-bindgen = { path = "metamod_bindgen" }
-metamod-sys = { path = "metamod_sys" }
-hlsdk-sys = { path = "hlsdk_sys" }
+metarust = { path = "metarust" }

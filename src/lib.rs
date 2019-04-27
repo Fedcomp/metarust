@@ -1,3 +1,1 @@
-mod init;
-
-pub use init::*;
+pub use metarust::*;
