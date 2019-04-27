@@ -2,11 +2,11 @@ use metarust::{PluginInfo, PLUG_LOADTIME};
 
 // TODO: Example with cargo field inheritance
 const PLUGIN_INFO: PluginInfo = PluginInfo::new(
-    "MetaRust",
-    "0.0.1",
-    "27.04.2019",
-    "Fedcomp",
-    "http://amx-x.ru",
+    env!("CARGO_PKG_NAME"),
+    env!("CARGO_PKG_VERSION"),
+    env!("CARGO_DATE"),
+    env!("CARGO_PKG_AUTHORS"),
+    env!("CARGO_PKG_HOMEPAGE"),
     "METARUST",
     PLUG_LOADTIME::PT_CHANGELEVEL,
     PLUG_LOADTIME::PT_CHANGELEVEL,

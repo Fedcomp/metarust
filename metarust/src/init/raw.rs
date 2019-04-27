@@ -16,18 +16,6 @@ use metamod_sys::{
 
 use super::{PluginInfo, PluginInfoOwned};
 
-//const PLUGIN_INFO: plugin_info_t = plugin_info_t {
-//    ifvers: META_INTERFACE_VERSION,
-//    name: cstr!("MetaRust"),
-//    version: cstr!("0.0.1"),
-//    date: cstr!("23.04.2019"),
-//    author: cstr!("Fedcomp"),
-//    url: cstr!("http://amx-x.ru"),
-//    logtag: cstr!("METARUST"),
-//    loadable: PT_CHANGELEVEL,
-//    unloadable: PT_CHANGELEVEL,
-//};
-
 const gMetaFunctionTable: META_FUNCTIONS = META_FUNCTIONS {
     pfnGetEntityAPI: None,
     pfnGetEntityAPI_Post: None,

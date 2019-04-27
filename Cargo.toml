@@ -3,7 +3,9 @@ name = "metarust_trace_plugin"
 version = "0.0.1"
 authors = ["Fedcomp"]
 edition = "2018"
+homepage = "http://amx-x.ru"
 publish = false
+build = "build.rs"
 
 [lib]
 crate-type = ["dylib"]
@@ -13,3 +15,6 @@ strict = [] # Treat warnings as a build error
 
 [dependencies]
 metarust = { path = "metarust" }
+
+[build-dependencies]
+chrono = "^0.4.6"
