@@ -1,2 +1,4 @@
 [build]
 target = "i686-unknown-linux-gnu"
+# Compile x86 for cargo expand
+#target = "x86_64-unknown-linux-gnu"

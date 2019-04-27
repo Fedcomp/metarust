@@ -147,7 +147,6 @@ static mut gpMetaGlobals: Option<&mut meta_globals_t> = None;
 
 /* Initialization pointer/hook processing functions */
 
-#[no_mangle]
 pub unsafe extern "C" fn Meta_Attach(
     _plug_loadtime: PLUG_LOADTIME,
     pFunctionTable: *mut META_FUNCTIONS,
@@ -160,12 +159,10 @@ pub unsafe extern "C" fn Meta_Attach(
     TRUE
 }
 
-#[no_mangle]
 pub extern "C" fn Meta_Detach() -> BOOL {
     TRUE
 }
 
-#[no_mangle]
 pub unsafe extern "C" fn Meta_Query(
     ifvers: *const c_char,
     pinfo: *mut *const plugin_info_t,
@@ -177,7 +174,6 @@ pub unsafe extern "C" fn Meta_Query(
     TRUE
 }
 
-#[no_mangle]
 pub unsafe extern "C" fn GiveFnptrsToDll(
     _pengfuncsFromEngine: *const enginefuncs_t,
     pGlobals: *const globalvars_t,
