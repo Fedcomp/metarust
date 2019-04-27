@@ -35,6 +35,7 @@ pub enum PLUG_LOADTIME {
 /// Basic information about plugin for metamod.
 /// Contains information date for end user and plugin load/unload data
 #[repr(C)]
+#[derive(Debug)]
 pub struct plugin_info_t {
     /// meta_interface version. See [META_INTERFACE_VERSION](constant.META_INTERFACE_VERSION.html)
     pub ifvers: *const c_char,

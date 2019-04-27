@@ -1,5 +1,6 @@
 #![allow(non_camel_case_types, non_snake_case, non_upper_case_globals)]
 
+use std::convert::TryFrom;
 use std::ffi::CStr;
 use std::os::raw::{c_char, c_int};
 
@@ -13,17 +14,19 @@ use metamod_sys::{
     PLUG_LOADTIME::{self, PT_CHANGELEVEL},
 };
 
-const PLUGIN_INFO: plugin_info_t = plugin_info_t {
-    ifvers: META_INTERFACE_VERSION,
-    name: cstr!("MetaRust"),
-    version: cstr!("0.0.1"),
-    date: cstr!("23.04.2019"),
-    author: cstr!("Fedcomp"),
-    url: cstr!("http://amx-x.ru"),
-    logtag: cstr!("METARUST"),
-    loadable: PT_CHANGELEVEL,
-    unloadable: PT_CHANGELEVEL,
-};
+use super::{PluginInfo, PluginInfoOwned};
+
+//const PLUGIN_INFO: plugin_info_t = plugin_info_t {
+//    ifvers: META_INTERFACE_VERSION,
+//    name: cstr!("MetaRust"),
+//    version: cstr!("0.0.1"),
+//    date: cstr!("23.04.2019"),
+//    author: cstr!("Fedcomp"),
+//    url: cstr!("http://amx-x.ru"),
+//    logtag: cstr!("METARUST"),
+//    loadable: PT_CHANGELEVEL,
+//    unloadable: PT_CHANGELEVEL,
+//};
 
 const gMetaFunctionTable: META_FUNCTIONS = META_FUNCTIONS {
     pfnGetEntityAPI: None,
@@ -144,9 +147,13 @@ const gFunctionTable_Post: DLL_FUNCTIONS = DLL_FUNCTIONS {
 
 pub static mut gpGlobals: Option<&globalvars_t> = None;
 static mut gpMetaGlobals: Option<&mut meta_globals_t> = None;
+static mut PLUGIN_INFO_OWNED: Option<PluginInfoOwned> = None;
+static mut PLUGIN_INFO: Option<plugin_info_t> = None;
 
 /* Initialization pointer/hook processing functions */
 
+// Inline all functions into proxy versions
+#[inline(always)]
 pub unsafe extern "C" fn Meta_Attach(
     _plug_loadtime: PLUG_LOADTIME,
     pFunctionTable: *mut META_FUNCTIONS,
@@ -159,21 +166,30 @@ pub unsafe extern "C" fn Meta_Attach(
     TRUE
 }
 
+#[inline(always)]
 pub extern "C" fn Meta_Detach() -> BOOL {
     TRUE
 }
 
+#[inline(always)]
 pub unsafe extern "C" fn Meta_Query(
     ifvers: *const c_char,
     pinfo: *mut *const plugin_info_t,
     _mutil_funcs: c_char,
+    // !Warning! not present in original version, user purely for metarust purposes
+    metarust_plugin_info: &PluginInfo,
 ) -> BOOL {
     let _interface_version = CStr::from_ptr(ifvers);
-    *pinfo = &PLUGIN_INFO;
+    // TODO: Error handling
+    PLUGIN_INFO_OWNED = Some(PluginInfoOwned::try_from(metarust_plugin_info).unwrap());
+    PLUGIN_INFO = Some(PLUGIN_INFO_OWNED.as_ref().unwrap().as_plugin_info_t());
+    println!("PASSING PLUGIN_INFO: {:?}", PLUGIN_INFO);
+    *pinfo = PLUGIN_INFO.as_ref().unwrap();
 
     TRUE
 }
 
+#[inline(always)]
 pub unsafe extern "C" fn GiveFnptrsToDll(
     _pengfuncsFromEngine: *const enginefuncs_t,
     pGlobals: *const globalvars_t,
