@@ -2,7 +2,7 @@
 /// Makes proxy functions at top level to underlying implementations
 /// and feeds them with plugin info
 macro_rules! register_plugin {
-    ($c:ident) => {
+    ($c:ident, $f:ident) => {
         use metarust::hlsdk_sys::BOOL;
         use metarust::metamod_bindgen::{enginefuncs_t, gamedll_funcs_t, globalvars_t};
         use metarust::metamod_sys::{meta_globals_t, plugin_info_t, META_FUNCTIONS};
@@ -39,7 +39,7 @@ macro_rules! register_plugin {
             pinfo: *mut *const plugin_info_t,
             mutil_funcs: c_char,
         ) -> BOOL {
-            raw_Meta_Query(ifvers, pinfo, mutil_funcs, &$c)
+            raw_Meta_Query(ifvers, pinfo, mutil_funcs, &$c, &$f)
         }
 
         #[no_mangle]

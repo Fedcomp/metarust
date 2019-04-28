@@ -1,4 +1,4 @@
-use metarust::{register_plugin, PluginInfo, PLUG_LOADTIME};
+use metarust::{register_plugin, CallResult, Forwards, PluginInfo, PLUG_LOADTIME};
 
 const PLUGIN_INFO: PluginInfo = PluginInfo::new(
     env!("CARGO_PKG_NAME"),
@@ -11,4 +11,14 @@ const PLUGIN_INFO: PluginInfo = PluginInfo::new(
     PLUG_LOADTIME::PT_CHANGELEVEL,
 );
 
-register_plugin!(PLUGIN_INFO);
+const FORWARDS: Forwards = Forwards {
+    plugin_init: Some(plugin_init),
+};
+
+register_plugin!(PLUGIN_INFO, FORWARDS);
+
+fn plugin_init() -> CallResult {
+    println!("PLUGIN_INIT Activated");
+
+    CallResult::Ignored
+}

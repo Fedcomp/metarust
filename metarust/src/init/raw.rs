@@ -8,13 +8,12 @@ use cstr_macro::cstr;
 use hlsdk_sys::{edict_t, BOOL, DLL_FUNCTIONS, TRUE};
 use metamod_bindgen::{enginefuncs_t, gamedll_funcs_t, globalvars_t};
 use metamod_sys::{
-    meta_globals_t, plugin_info_t, GETENTITYAPI_FN_INTERFACE_VERSION, META_FUNCTIONS,
-    META_INTERFACE_VERSION,
-    META_RES::*,
-    PLUG_LOADTIME::{self, PT_CHANGELEVEL},
+    meta_globals_t, plugin_info_t, GETENTITYAPI_FN_INTERFACE_VERSION, META_FUNCTIONS, META_RES::*,
+    PLUG_LOADTIME,
 };
 
 use super::{PluginInfo, PluginInfoOwned};
+use crate::forwards;
 
 const gMetaFunctionTable: META_FUNCTIONS = META_FUNCTIONS {
     pfnGetEntityAPI: None,
@@ -27,7 +26,7 @@ const gMetaFunctionTable: META_FUNCTIONS = META_FUNCTIONS {
     pfnGetEngineFunctions_Post: None,
 };
 
-const gFunctionTable: DLL_FUNCTIONS = DLL_FUNCTIONS {
+static mut gFunctionTable: DLL_FUNCTIONS = DLL_FUNCTIONS {
     pfnGameInit: None,
     pfnSpawn: None,
     pfnThink: None,
@@ -80,7 +79,7 @@ const gFunctionTable: DLL_FUNCTIONS = DLL_FUNCTIONS {
     pfnAllowLagCompensation: None,
 };
 
-const gFunctionTable_Post: DLL_FUNCTIONS = DLL_FUNCTIONS {
+static mut gFunctionTable_Post: DLL_FUNCTIONS = DLL_FUNCTIONS {
     pfnGameInit: None,
     pfnSpawn: None,
     pfnThink: None,
@@ -134,9 +133,10 @@ const gFunctionTable_Post: DLL_FUNCTIONS = DLL_FUNCTIONS {
 };
 
 pub static mut gpGlobals: Option<&globalvars_t> = None;
-static mut gpMetaGlobals: Option<&mut meta_globals_t> = None;
+pub static mut gpMetaGlobals: Option<&mut meta_globals_t> = None;
 static mut PLUGIN_INFO_OWNED: Option<PluginInfoOwned> = None;
-static mut PLUGIN_INFO: Option<plugin_info_t> = None;
+static mut PLUGIN_INFO_RAW: Option<plugin_info_t> = None;
+pub static mut PLUGIN_FORWARDS: Option<forwards::Forwards> = None;
 
 /* Initialization pointer/hook processing functions */
 
@@ -164,15 +164,27 @@ pub unsafe extern "C" fn Meta_Query(
     ifvers: *const c_char,
     pinfo: *mut *const plugin_info_t,
     _mutil_funcs: c_char,
-    // !Warning! not present in original version, user purely for metarust purposes
+    // !Warning! not present in original version, used purely for metarust purposes
     metarust_plugin_info: &PluginInfo,
+    metarust_forwards: &forwards::Forwards,
 ) -> BOOL {
+    // TODO Check interface version is correct
     let _interface_version = CStr::from_ptr(ifvers);
+
+    PLUGIN_FORWARDS = Some(metarust_forwards.clone());
+
+    // Map plugin requested forwards to raw versions
+    forwards::map_requested_forwards(
+        PLUGIN_FORWARDS.as_ref().unwrap(),
+        &mut gFunctionTable,
+        &mut gFunctionTable_Post,
+    );
+
     // TODO: Error handling
     PLUGIN_INFO_OWNED = Some(PluginInfoOwned::try_from(metarust_plugin_info).unwrap());
-    PLUGIN_INFO = Some(PLUGIN_INFO_OWNED.as_ref().unwrap().as_plugin_info_t());
-    println!("PASSING PLUGIN_INFO: {:?}", PLUGIN_INFO);
-    *pinfo = PLUGIN_INFO.as_ref().unwrap();
+    PLUGIN_INFO_RAW = Some(PLUGIN_INFO_OWNED.as_ref().unwrap().as_plugin_info_t());
+    println!("PASSING PLUGIN_INFO: {:?}", PLUGIN_INFO_RAW);
+    *pinfo = PLUGIN_INFO_RAW.as_ref().unwrap();
 
     TRUE
 }
@@ -198,7 +210,7 @@ pub unsafe extern "C" fn get_entity_api2(
     }
 
     // Return our hook list to engine
-    *pFunctionTable = gFunctionTable;
+    *pFunctionTable = gFunctionTable.clone();
 
     TRUE
 }

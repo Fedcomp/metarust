@@ -194,11 +194,11 @@ pub type fnRegisterEncoders = unsafe extern "C" fn();
 pub type fnCreateInstancedBaselines = unsafe extern "C" fn();
 // TODO: Description
 pub type fnServerActivate =
-    unsafe extern "C" fn(pEdictList: *const edict_t, edictCount: i32, clientMax: i32);
+    unsafe extern "C" fn(pEdictList: *const edict_t, edictCount: c_int, clientMax: c_int);
 
 /// List of engine callbacks
 #[repr(C)]
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct DLL_FUNCTIONS {
     pub pfnGameInit: Option<fnGameInit>,
     pub pfnSpawn: UNFINISHED_FUNCTION_POINTER,
