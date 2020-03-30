@@ -4,4 +4,4 @@ version = "0.0.1"
 authors = ["Fedcomp"]
 
 [build-dependencies]
-bindgen = "0.26.3"
+bindgen = "0.31.1"
