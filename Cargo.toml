@@ -1,0 +1,9 @@
+[workspace]
+
+members = [
+    "hlsdk_sys",
+    "metamod_sys",
+    "metamod_bindgen",
+    "metarust",
+    "trace_plugin",
+]
