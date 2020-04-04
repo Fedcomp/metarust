@@ -14,7 +14,7 @@ crate-type = ["dylib"]
 strict = [] # Treat warnings as a build error
 
 [dependencies]
-metarust = { path = "metarust" }
+metarust = { path = "../metarust" }
 
 [build-dependencies]
 chrono = "^0.4.6"
