@@ -8,7 +8,7 @@ publish = false
 build = "build.rs"
 
 [lib]
-crate-type = ["dylib"]
+crate-type = ["cdylib"]
 
 [features]
 strict = [] # Treat warnings as a build error
