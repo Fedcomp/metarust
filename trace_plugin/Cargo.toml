@@ -14,7 +14,7 @@ crate-type = ["cdylib"]
 strict = [] # Treat warnings as a build error
 
 [dependencies]
-metarust = { path = "../metarust" }
+hlsdk-sys = { path = "../hlsdk_sys" }
 
 [build-dependencies]
 chrono = "^0.4.6"
