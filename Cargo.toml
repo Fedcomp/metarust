@@ -3,5 +3,6 @@
 members = [
     "hlsdk_sys",
     "metamod_sys",
+    "metarust",
     "trace_plugin",
 ]
