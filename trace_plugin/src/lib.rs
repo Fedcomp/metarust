@@ -1,13 +1,11 @@
-use hlsdk_sys::{BOOL, TRUE};
-
 #[no_mangle]
-pub extern "C" fn Meta_Detach(/* TODO */) -> BOOL {
-    TRUE
+pub extern "C" fn Meta_Detach(/* TODO */) -> bool {
+    true
 }
 
 #[no_mangle]
-pub extern "C" fn Meta_Query(/* TODO */) -> BOOL {
-    TRUE
+pub extern "C" fn Meta_Query(/* TODO */) -> bool {
+    true
 }
 
 #[no_mangle]
