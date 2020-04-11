@@ -1,5 +1,5 @@
-use std::os::raw::c_char;
 use crate::cstr;
+use std::os::raw::c_char;
 
 /// Metamod interface version.
 /// Declaration copy of META_INTERFACE_VERSION.
