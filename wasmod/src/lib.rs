@@ -1,7 +1,7 @@
 mod metamod;
 
 use crate::metamod::{PluginInfo, PluginLoadTime, METAMOD_INTERFACE_VERSION};
-use hlsdk_sys::extdll::{BOOL, TRUE};
+use hlsdk_sys::extdll::{BOOL, TRUE, FALSE};
 use std::os::raw::c_char;
 
 const PLUGIN_INFO: PluginInfo = PluginInfo {
@@ -16,6 +16,8 @@ const PLUGIN_INFO: PluginInfo = PluginInfo {
     unloadable: PluginLoadTime::Startup,
 };
 
+const LOGTAG: &str = concat!("[", env!("CARGO_PKG_NAME"), "] ");
+
 #[no_mangle]
 pub extern "C" fn Meta_Attach(/* TODO */) -> BOOL {
     TRUE
@@ -28,14 +30,16 @@ pub extern "C" fn Meta_Detach(/* TODO */) -> BOOL {
 
 #[no_mangle]
 pub extern "C" fn Meta_Query(
-    _interface_version: *const c_char,
+    interface_version: *const c_char,
     plugin_info: *mut *const PluginInfo, /* TODO: mutil_funcs_t *pMetaUtilFuncs */
 ) -> BOOL {
-    // TODO
-    // let interface_version = unsafe { std::ffi::CStr::from_ptr(interface_version) };
-    // if interface_version != METAMOD_INTERFACE_VERSION {
-    //     return false;
-    // }
+    // TODO: Check only major version compatibility?
+    let ifvers = unsafe { std::ffi::CStr::from_ptr(interface_version) }.to_string_lossy().to_string();
+    let expected_ifvers = unsafe { std::ffi::CStr::from_ptr(METAMOD_INTERFACE_VERSION) }.to_string_lossy().to_string();
+    if ifvers != expected_ifvers {
+        eprintln!("{}Metamod interface mismatch, expected: {}, received: {}", LOGTAG, expected_ifvers, ifvers);
+        return FALSE;
+    }
 
     unsafe { *plugin_info = &PLUGIN_INFO };
     TRUE
