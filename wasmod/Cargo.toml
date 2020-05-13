@@ -1,5 +1,5 @@
 [package]
-name = "trace_plugin"
+name = "wasmod"
 version = "0.0.1"
 authors = ["Fedcomp"]
 edition = "2018"

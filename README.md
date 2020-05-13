@@ -1,2 +1,2 @@
-# MetaRust
-Attempt to write metamod plugin completely in rust
+# WASMod
+Metamod module to write webassembly plugins for cs 1.6
