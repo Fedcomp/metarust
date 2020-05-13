@@ -1,5 +1,12 @@
-use crate::cstr;
 use std::os::raw::c_char;
+
+#[macro_export]
+macro_rules! cstr {
+    ($s:expr) => {
+        concat!($s, "\0") as *const str as *const [::std::os::raw::c_char]
+            as *const ::std::os::raw::c_char
+    };
+}
 
 /// Metamod interface version.
 /// Declaration copy of META_INTERFACE_VERSION.

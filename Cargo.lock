@@ -29,10 +29,6 @@ name = "metamod-sys"
 version = "0.0.1"
 
 [[package]]
-name = "metarust"
-version = "0.1.0"
-
-[[package]]
 name = "num-integer"
 version = "0.1.42"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -65,12 +61,11 @@ dependencies = [
 ]
 
 [[package]]
-name = "trace_plugin"
+name = "wasmod"
 version = "0.0.1"
 dependencies = [
  "chrono 0.4.11 (registry+https://github.com/rust-lang/crates.io-index)",
  "hlsdk-sys 0.0.1",
- "metarust 0.1.0",
 ]
 
 [[package]]

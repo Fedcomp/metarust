@@ -317,14 +317,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "trace_plugin"
-version = "0.0.1"
-dependencies = [
- "chrono 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)",
- "metarust 0.0.1",
-]
-
-[[package]]
 name = "ucd-util"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"

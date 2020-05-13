@@ -1,6 +1,7 @@
+mod metamod;
+
+use crate::metamod::{PluginInfo, PluginLoadTime, METAMOD_INTERFACE_VERSION};
 use hlsdk_sys::extdll::{BOOL, TRUE};
-use metarust::cstr;
-use metarust::metamod::{PluginInfo, PluginLoadTime, METAMOD_INTERFACE_VERSION};
 use std::os::raw::c_char;
 
 const PLUGIN_INFO: PluginInfo = PluginInfo {
